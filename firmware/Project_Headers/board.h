@@ -54,6 +54,47 @@
 
 #if (PCB_VERSION == 0)
 
+/* Motor control pins definitions */
+#define MOTOR1_IN1_PIN           PORTC_PCR4
+#define MOTOR1_IN1_NUMBER        GPIO_PIN(4)
+#define MOTOR1_IN1_PDOR          GPIOC_PDOR
+#define MOTOR1_IN1_PDDR          GPIOC_PDDR
+#define MOTOR1_IN1_PCOR          GPIOC_PCOR
+#define MOTOR1_IN1_PSOR          GPIOC_PSOR
+#define MOTOR1_IN1_PTOR          GPIOC_PTOR
+#define MOTOR1_IN1_MUX           1
+
+#define MOTOR1_IN2_PIN           PORTC_PCR5
+#define MOTOR1_IN2_NUMBER        GPIO_PIN(5)
+#define MOTOR1_IN2_PDOR          GPIOC_PDOR
+#define MOTOR1_IN2_PDDR          GPIOC_PDDR
+#define MOTOR1_IN2_PCOR          GPIOC_PCOR
+#define MOTOR1_IN2_PSOR          GPIOC_PSOR
+#define MOTOR1_IN2_PTOR          GPIOC_PTOR
+#define MOTOR1_IN2_MUX           1
+
+#define MOTOR2_IN1_PIN           PORTC_PCR6
+#define MOTOR2_IN1_NUMBER        GPIO_PIN(6)
+#define MOTOR2_IN1_PDOR          GPIOC_PDOR
+#define MOTOR2_IN1_PDDR          GPIOC_PDDR
+#define MOTOR2_IN1_PCOR          GPIOC_PCOR
+#define MOTOR2_IN1_PSOR          GPIOC_PSOR
+#define MOTOR2_IN1_PTOR          GPIOC_PTOR
+#define MOTOR2_IN1_MUX           1
+
+#define MOTOR2_IN2_PIN           PORTC_PCR7
+#define MOTOR2_IN2_NUMBER        GPIO_PIN(7)
+#define MOTOR2_IN2_PDOR          GPIOC_PDOR
+#define MOTOR2_IN2_PDDR          GPIOC_PDDR
+#define MOTOR2_IN2_PCOR          GPIOC_PCOR
+#define MOTOR2_IN2_PSOR          GPIOC_PSOR
+#define MOTOR2_IN2_PTOR          GPIOC_PTOR
+#define MOTOR2_IN2_MUX           1
+
+//#define ACT_LED_ON()             (ACTIVATION_LED_PCOR |= GPIO_PCOR_PTCO(ACTIVATION_LED_NUMBER))
+//#define ACT_LED_OFF()            (ACTIVATION_LED_PSOR |= GPIO_PSOR_PTSO(ACTIVATION_LED_NUMBER))
+//#define ACT_LED_TOGGLE()         (ACTIVATION_LED_PTOR |= GPIO_PTOR_PTTO(ACTIVATION_LED_NUMBER))
+
 #endif
 
 #endif /* __BOARD_H */

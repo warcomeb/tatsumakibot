@@ -3,6 +3,8 @@
 	<name>tatsumakibot</name>
 	<comment></comment>
 	<projects>
+		<project location="PARENT-3-PROJECT_LOC/External/ohik60">
+ohik60		</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -31,7 +33,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildLocation</key>
-					<value>${ProjDirPath}/RAM</value>
+					<value>${ProjDirPath}/FLASH</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>

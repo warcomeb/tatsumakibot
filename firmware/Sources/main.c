@@ -39,6 +39,7 @@
 
 #include "board.h"
 #include "pinout.h"
+#include "timer.h"
 
 int main(void)
 {
@@ -58,8 +59,18 @@ int counter = 0;
     setPinout();
     initGpio();
 
+    /* Setup base timer @ 1ms. */
+    Timer_init();
 
-
+    /* Hello by LEDs */
+    SYS_LED_TOGGLE();
+    Timer_delay(500);
+    ERR_LED_TOGGLE();
+    Timer_delay(500);
+    SYS_LED_TOGGLE();
+    Timer_delay(500);
+    ERR_LED_TOGGLE();
+    
 for(;;) {	   
 counter++;
 }

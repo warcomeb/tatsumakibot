@@ -101,10 +101,33 @@
     MOTOR2_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN2_NUMBER); \
     } while (0)
 
-//#define ACT_LED_ON()             (ACTIVATION_LED_PCOR |= GPIO_PCOR_PTCO(ACTIVATION_LED_NUMBER))
-//#define ACT_LED_OFF()            (ACTIVATION_LED_PSOR |= GPIO_PSOR_PTSO(ACTIVATION_LED_NUMBER))
-//#define ACT_LED_TOGGLE()         (ACTIVATION_LED_PTOR |= GPIO_PTOR_PTTO(ACTIVATION_LED_NUMBER))
 
+/* OHIBoard LEDs */
+#define SYS_LED_PIN              PORTD_PCR4
+#define SYS_LED_NUMBER           GPIO_PIN(4)
+#define SYS_LED_PDOR             GPIOD_PDOR
+#define SYS_LED_PDDR             GPIOD_PDDR
+#define SYS_LED_PCOR             GPIOD_PCOR
+#define SYS_LED_PSOR             GPIOD_PSOR
+#define SYS_LED_PTOR             GPIOD_PTOR
+#define SYS_LED_MUX              1
+
+#define SYS_LED_ON()             (SYS_LED_PCOR |= GPIO_PCOR_PTCO(SYS_LED_NUMBER))
+#define SYS_LED_OFF()            (SYS_LED_PSOR |= GPIO_PSOR_PTSO(SYS_LED_NUMBER))
+#define SYS_LED_TOGGLE()         (SYS_LED_PTOR |= GPIO_PTOR_PTTO(SYS_LED_NUMBER))
+
+#define ERR_LED_PIN              PORTD_PCR7
+#define ERR_LED_NUMBER           GPIO_PIN(7)
+#define ERR_LED_PDOR             GPIOD_PDOR
+#define ERR_LED_PDDR             GPIOD_PDDR
+#define ERR_LED_PCOR             GPIOD_PCOR
+#define ERR_LED_PSOR             GPIOD_PSOR
+#define ERR_LED_PTOR             GPIOD_PTOR
+#define ERR_LED_MUX              1
+
+#define ERR_LED_ON()             (ERR_LED_PCOR |= GPIO_PCOR_PTCO(ERR_LED_NUMBER))
+#define ERR_LED_OFF()            (ERR_LED_PSOR |= GPIO_PSOR_PTSO(ERR_LED_NUMBER))
+#define ERR_LED_TOGGLE()         (ERR_LED_PTOR |= GPIO_PTOR_PTTO(ERR_LED_NUMBER))
 #endif
 
 #endif /* __BOARD_H */

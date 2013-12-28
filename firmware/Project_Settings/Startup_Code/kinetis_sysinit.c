@@ -15,6 +15,9 @@
 #if __cplusplus
 extern "C" {
 #endif
+
+extern void Timer_isr(void);
+    
 extern uint32_t __vector_table[];
 extern unsigned long _estack;
 extern void __thumb_startup(void);
@@ -145,7 +148,7 @@ void (* const InterruptVector[])() __attribute__ ((section(".vectortable"))) = {
     Default_Handler,
     Default_Handler,
     Default_Handler,
-    Default_Handler,
+    Timer_isr,
     Default_Handler,
     Default_Handler,
     Default_Handler,

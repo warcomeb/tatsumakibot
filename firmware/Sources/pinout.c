@@ -34,6 +34,12 @@
 void setPinout (void)
 {
 #if (PCB_VERSION == 0)
+
+    /* Set mux for motor direction pins: */
+    MOTOR1_IN1_PIN = PORT_PCR_MUX(MOTOR1_IN1_MUX);
+    MOTOR1_IN2_PIN = PORT_PCR_MUX(MOTOR1_IN2_MUX);
+    MOTOR2_IN1_PIN = PORT_PCR_MUX(MOTOR2_IN1_MUX);
+    MOTOR2_IN2_PIN = PORT_PCR_MUX(MOTOR2_IN2_MUX);
     
 #endif
 }
@@ -41,6 +47,15 @@ void setPinout (void)
 void initGpio (void)
 {    
 #if (PCB_VERSION == 0)
+    
+    /* Initialization motor direction pins: */
+    MOTOR1_IN1_PDDR |= GPIO_PDDR_PDD(MOTOR1_IN1_NUMBER);
+    MOTOR1_IN2_PDDR |= GPIO_PDDR_PDD(MOTOR1_IN2_NUMBER);
+    MOTOR1_DISABLE();
+    
+    MOTOR2_IN1_PDDR |= GPIO_PDDR_PDD(MOTOR2_IN1_NUMBER);
+    MOTOR2_IN2_PDDR |= GPIO_PDDR_PDD(MOTOR2_IN2_NUMBER);
+    MOTOR2_DISABLE();
     
 #endif
 }

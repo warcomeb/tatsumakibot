@@ -128,6 +128,21 @@
 #define ERR_LED_ON()             (ERR_LED_PCOR |= GPIO_PCOR_PTCO(ERR_LED_NUMBER))
 #define ERR_LED_OFF()            (ERR_LED_PSOR |= GPIO_PSOR_PTSO(ERR_LED_NUMBER))
 #define ERR_LED_TOGGLE()         (ERR_LED_PTOR |= GPIO_PTOR_PTTO(ERR_LED_NUMBER))
+
+/* Output Test pin (OHIBoard-IO58): */
+#define TEST_PIN                 PORTD_PCR3
+#define TEST_NUMBER              GPIO_PIN(3)
+#define TEST_PDOR                GPIOD_PDOR
+#define TEST_PDDR                GPIOD_PDDR
+#define TEST_PCOR                GPIOD_PCOR
+#define TEST_PSOR                GPIOD_PSOR
+#define TEST_PTOR                GPIOD_PTOR
+#define TEST_MUX                 1
+
+#define TEST_CLEAR()             (TEST_PCOR |= GPIO_PCOR_PTCO(TEST_NUMBER))
+#define TEST_SET()               (TEST_PSOR |= GPIO_PSOR_PTSO(TEST_NUMBER))
+#define TEST_TOGGLE()            (TEST_PTOR |= GPIO_PTOR_PTTO(TEST_NUMBER))
+
 #endif
 
 #endif /* __BOARD_H */

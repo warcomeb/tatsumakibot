@@ -44,6 +44,8 @@ void setPinout (void)
     SYS_LED_PIN = PORT_PCR_MUX(SYS_LED_MUX);
     ERR_LED_PIN = PORT_PCR_MUX(ERR_LED_MUX);
     
+    TEST_PIN = PORT_PCR_MUX(TEST_MUX);
+        
 #endif
 }
 
@@ -65,5 +67,9 @@ void initGpio (void)
     ERR_LED_PDDR |= GPIO_PDDR_PDD(ERR_LED_NUMBER);
     ERR_LED_OFF();
 
+    /* Test pin output direction */
+    TEST_PDDR |= GPIO_PDDR_PDD(TEST_NUMBER);
+
+    
 #endif
 }

@@ -38,9 +38,11 @@ void Timer_isr (void)
 {
     Timer_milliseconds++;
 
+    TEST_TOGGLE();
+    
     /* Clear ISR */
     (void) (FTM0_SC==0);
-    FTM0_SC = FTM_SC_TOIE_MASK | FTM_SC_CLKS(1) | FTM_SC_PS(0x3) | 0;
+    FTM0_SC = FTM_SC_TOIE_MASK | FTM_SC_CLKS(1) | FTM_SC_PS(0x2) | 0;
 }
 
 void Timer_init (void)
@@ -53,8 +55,8 @@ void Timer_init (void)
 
     /* 12500 pulse @ 80ns = 1ms */
     FTM0_MOD = 12499;
-    /* Enable timer interrupt, system clock and prescaler set to divide x8 (12.5MHz) */
-    FTM0_SC = FTM_SC_TOIE_MASK | FTM_SC_CLKS(1) | FTM_SC_PS(0x3) | 0;
+    /* Enable timer interrupt, system clock and prescaler set to divide x4 (12.5MHz) */
+    FTM0_SC = FTM_SC_TOIE_MASK | FTM_SC_CLKS(1) | FTM_SC_PS(0x2) | 0;
 
     Timer_milliseconds = 0;
 }

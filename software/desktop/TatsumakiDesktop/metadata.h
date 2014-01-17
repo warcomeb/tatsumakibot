@@ -20,27 +20,20 @@
  ******************************************************************************/
 
 /**
- * @file main.cpp
+ * @file metadata.h
  * @author Marco Giammarini <m.giammarini@warcomeb.it>
- * @brief Main file of the application.
+ * @brief Metadata of the project.
  */
 
-#include "mainwindow.h"
-#include <QApplication>
+#ifndef METADATA_H
+#define METADATA_H
 
-#include "metadata.h"
+#define ORGANIZATION_NAME    "Marco Giammarini"
+#define ORGANIZATION_DOMAIN  "warcomeb.it"
 
-int main(int argc, char *argv[])
-{
-    /* Set metadata into application */
-    QCoreApplication::setOrganizationName(ORGANIZATION_NAME);
-    QCoreApplication::setOrganizationDomain(ORGANIZATION_DOMAIN);
-    QCoreApplication::setApplicationName(PROJECT_NAME);
-    QCoreApplication::setApplicationVersion(PROJECT_VERSION);
+#define PROJECT_NAME         "TatsumakiBot Interdace"
+#define PROJECT_VERSION      "0.1.0"
 
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+#define RELEASE_DATE         "Xxxxxxx NN, 2014"
 
-    return a.exec();
-}
+#endif // METADATA_H

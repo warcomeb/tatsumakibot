@@ -35,11 +35,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "metadata.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle(QString(PROJECT_NAME) + " v." + QString(PROJECT_VERSION));
 }
 
 MainWindow::~MainWindow()

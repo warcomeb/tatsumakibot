@@ -39,7 +39,7 @@
         </size>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>RIGHT</string>
        </property>
       </widget>
      </item>
@@ -58,7 +58,7 @@
         </size>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>UP</string>
        </property>
       </widget>
      </item>
@@ -77,7 +77,7 @@
         </size>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>DOWN</string>
        </property>
       </widget>
      </item>
@@ -96,7 +96,7 @@
         </size>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>BREAK</string>
        </property>
       </widget>
      </item>
@@ -115,7 +115,7 @@
         </size>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>LEFT</string>
        </property>
       </widget>
      </item>
@@ -134,7 +134,7 @@
         </size>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>mUP</string>
        </property>
       </widget>
      </item>
@@ -153,7 +153,7 @@
         </size>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>mLEFT</string>
        </property>
       </widget>
      </item>
@@ -178,7 +178,7 @@
         </size>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>mRIGHT</string>
        </property>
       </widget>
      </item>
@@ -197,7 +197,7 @@
         </size>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>mDOWN</string>
        </property>
       </widget>
      </item>

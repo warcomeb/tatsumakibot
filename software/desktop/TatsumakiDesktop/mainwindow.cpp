@@ -25,13 +25,6 @@
  * @brief Main window class methods implementations.
  */
 
-/**
- * @mainpage TatsumakiBot Desktop Control Interface
- *
- *
- * @author Marco Giammarini <m.giammarini@warcomeb.it>
- */
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -39,13 +32,71 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_serialPort(0)
 {
     ui->setupUi(this);
     setWindowTitle(QString(PROJECT_NAME) + " v." + QString(PROJECT_VERSION));
+
+    /* TODO: Disable sending buttons */
+
+    m_serialSetup = new SerialSetup;
+    /* Send fix data to serial interface! */
+
+    ui->statusBar->showMessage(tr("No communication port connected!"));
 }
 
 MainWindow::~MainWindow()
 {
+    delete m_serialSetup;
+
+    if (m_serialPort)
+    {
+        /* TODO: Close and delete! */
+    }
+
     delete ui;
+}
+
+/**
+ * @brief MainWindow::setupSerialPort
+ *
+ * This method show setup dialog for communication port.
+ * If connection was just established show a message error.
+ */
+void
+MainWindow::setupSerialPort ()
+{
+    if (!m_serialPort)
+    {
+        m_serialSetup->exec();
+//        setting = m_serialSetup->getParameters();
+    }
+    else
+    {
+
+    }
+}
+
+
+/**
+ * @brief MainWindow::connectSerialPort
+ *
+ * This method connect the application with the hardware serial interface.
+ */
+void
+MainWindow::connectSerialPort ()
+{
+
+}
+
+/**
+ * @brief MainWindow::disconnectSerialPort
+ *
+ * This method disconnect the application from the hardware serial interface.
+ */
+void
+MainWindow::disconnectSerialPort ()
+{
+
 }

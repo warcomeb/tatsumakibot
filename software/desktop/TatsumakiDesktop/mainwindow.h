@@ -20,7 +20,7 @@
  ******************************************************************************/
 
 /**
- * @file mainwindow.cpp
+ * @file mainwindow.h
  * @author Marco Giammarini <m.giammarini@warcomeb.it>
  * @brief Main window class definitions.
  */
@@ -28,7 +28,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "serialsetup.h"
+
 #include <QMainWindow>
+
+#include <QtSerialPort/QSerialPort>
+#include <QtSerialPort/QSerialPortInfo>
 
 namespace Ui {
 class MainWindow;
@@ -42,8 +47,16 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void setupSerialPort();
+    void connectSerialPort();
+    void disconnectSerialPort();
+
 private:
     Ui::MainWindow *ui;
+
+    QSerialPort* m_serialPort;
+    SerialSetup* m_serialSetup;
 };
 
 #endif // MAINWINDOW_H

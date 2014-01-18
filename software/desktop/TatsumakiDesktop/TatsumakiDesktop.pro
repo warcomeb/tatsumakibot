@@ -6,16 +6,23 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT       += widgets serialport
+} else {
+    include($$QTSERIALPORT_PROJECT_ROOT/src/serialport/qt4support/serialport.prf)
+}
 
 TARGET = TatsumakiDesktop
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    serialsetup.cpp
 
 HEADERS  += mainwindow.h \
-    metadata.h
+    metadata.h \
+    serialsetup.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    serialsetup.ui

@@ -25,6 +25,13 @@
  * @brief Main file of the application.
  */
 
+/**
+ * @mainpage TatsumakiBot Desktop Control Interface
+ *
+ *
+ * @author Marco Giammarini <m.giammarini@warcomeb.it>
+ */
+
 #include "mainwindow.h"
 #include <QApplication>
 

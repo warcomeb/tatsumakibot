@@ -49,6 +49,9 @@ SerialSetup::SerialSetup(QWidget *parent) :
     fillPortParameters();
     // Show parameters of first available port
     showPortInfos(0);
+
+    // Update serial parameter choosed by the user
+    updateSettings();
 }
 
 SerialSetup::~SerialSetup()
@@ -56,8 +59,7 @@ SerialSetup::~SerialSetup()
     delete ui;
 }
 
-void
-SerialSetup::fillPortInfos()
+void SerialSetup::fillPortInfos()
 {
     // Clear combo box
     ui->portsComboBox->clear();
@@ -76,8 +78,7 @@ SerialSetup::fillPortInfos()
     }
 }
 
-void
-SerialSetup::fillPortParameters()
+void SerialSetup::fillPortParameters()
 {
     // fill data bits
     ui->dataBitsComboBox->addItem(QStringLiteral("5"), QSerialPort::Data5);
@@ -106,20 +107,22 @@ SerialSetup::fillPortParameters()
     ui->flowControlComboBox->addItem(QStringLiteral("XON/XOFF"), QSerialPort::SoftwareControl);
 }
 
-void
-SerialSetup::showPortInfos(int index)
+void SerialSetup::showPortInfos(int index)
 {
-    if (index != -1) {
+    if (index != -1)
+    {
         QStringList list = ui->portsComboBox->itemData(index).toStringList();
 
-        // Add each possible baudrate
-        QSerialPortInfo portInfo(list.at(0));
-        ui->rateComboBox->clear();
-        foreach (quint32 rate, portInfo.standardBaudRates())
+        if (list.size() > 0)
         {
-            ui->rateComboBox->addItem(QString::number(rate));
+            // Add each possible baudrate
+            QSerialPortInfo portInfo(list.at(0));
+            ui->rateComboBox->clear();
+            foreach (quint32 rate, portInfo.standardBaudRates())
+            {
+                ui->rateComboBox->addItem(QString::number(rate));
+            }
         }
-
     }
 }
 
@@ -135,8 +138,7 @@ SerialSetup::showPortInfos(int index)
  * @param parity The type of parity used to check the packet
  * @param stopBits The number of stop bit into packet
  */
-void
-SerialSetup::setFixedParameters(enum QSerialPort::BaudRate rate,
+void SerialSetup::setFixedParameters(enum QSerialPort::BaudRate rate,
                         enum QSerialPort::DataBits dataBits,
                         enum QSerialPort::FlowControl flowControl,
                         enum QSerialPort::Parity parity,
@@ -238,8 +240,7 @@ SerialSetup::setFixedParameters(enum QSerialPort::BaudRate rate,
  *
  * This method restores the ability to use the combo box to select the parameters.
  */
-void
-SerialSetup::clearFixedParameters()
+void SerialSetup::clearFixedParameters()
 {
     m_isFixedParameter = false;
 
@@ -248,4 +249,65 @@ SerialSetup::clearFixedParameters()
     ui->parityComboBox->setDisabled(false);
     ui->stopBitsComboBox->setDisabled(false);
     ui->rateComboBox->setDisabled(false);
+}
+
+/**
+ * @brief SerialSetup::updateSettings
+ *
+ * This method save into a SerialSettings object the settings selected by
+ * the user.
+ *
+ */
+void SerialSetup::updateSettings()
+{
+    m_settings.name = ui->portsComboBox->currentText();
+
+    // Rate
+    m_settings.baudrate = static_cast<QSerialPort::BaudRate>(
+        ui->rateComboBox->itemData(ui->rateComboBox->currentIndex()).toInt());
+    m_settings.baudrateString = QString::number(m_settings.baudrate);
+
+    // Data bits
+    m_settings.dataBits = static_cast<QSerialPort::DataBits>(
+        ui->dataBitsComboBox->itemData(ui->dataBitsComboBox->currentIndex()).toInt());
+    m_settings.dataBitsString = ui->dataBitsComboBox->currentText();
+
+    // Parity
+    m_settings.parity = static_cast<QSerialPort::Parity>(
+        ui->parityComboBox->itemData(ui->parityComboBox->currentIndex()).toInt());
+    m_settings.parityString = ui->parityComboBox->currentText();
+
+    // Stop bits
+    m_settings.stopBits = static_cast<QSerialPort::StopBits>(
+                ui->stopBitsComboBox->itemData(ui->stopBitsComboBox->currentIndex()).toInt());
+    m_settings.stopBitsString = ui->stopBitsComboBox->currentText();
+
+    // Flow control
+    m_settings.flowControl = static_cast<QSerialPort::FlowControl>(
+        ui->flowControlComboBox->itemData(ui->flowControlComboBox->currentIndex()).toInt());
+    m_settings.flowControlString = ui->flowControlComboBox->currentText();
+}
+
+/**
+ * @brief SerialSetup::apply
+ *
+ * This method is a slot called by confirm button. It save the settings selected
+ * by the user and close the dialog.
+ */
+void SerialSetup::apply()
+{
+    updateSettings();
+    close();
+}
+
+/**
+ * @brief SerialSetup::getSettings
+ *
+ * This method return the selected settings by the user.
+ *
+ * @return Selected settings by the user
+ */
+SerialSetup::SerialSettings SerialSetup::getSettings() const
+{
+    return m_settings;
 }

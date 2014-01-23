@@ -45,6 +45,23 @@ public:
     explicit SerialSetup(QWidget *parent = 0);
     ~SerialSetup();
 
+    struct SerialSettings
+    {
+        QString name;
+
+        QSerialPort::BaudRate baudrate;
+        QSerialPort::DataBits dataBits;
+        QSerialPort::Parity parity;
+        QSerialPort::StopBits stopBits;
+        QSerialPort::FlowControl flowControl;
+
+        QString baudrateString;
+        QString dataBitsString;
+        QString parityString;
+        QString stopBitsString;
+        QString flowControlString;
+    };
+
     void setFixedParameters(enum QSerialPort::BaudRate rate,
                             enum QSerialPort::DataBits dataBits,
                             enum QSerialPort::FlowControl flowControl,
@@ -52,16 +69,22 @@ public:
                             enum QSerialPort::StopBits stopBits);
     void clearFixedParameters();
 
+    SerialSettings getSettings() const;
+
 private slots:
     void showPortInfos(int index);
+    void apply();
 
 private:
     Ui::SerialSetup *ui;
 
     bool m_isFixedParameter;
+    SerialSettings m_settings;
 
     void fillPortInfos();
     void fillPortParameters();
+
+    void updateSettings();
 };
 
 #endif // SERIALSETUP_H

@@ -30,6 +30,9 @@
 
 #include <QDialog>
 
+#include <QtSerialPort/QSerialPort>
+#include <QtSerialPort/QSerialPortInfo>
+
 namespace Ui {
 class SerialSetup;
 }
@@ -42,8 +45,23 @@ public:
     explicit SerialSetup(QWidget *parent = 0);
     ~SerialSetup();
 
+    void setFixedParameters(enum QSerialPort::BaudRate rate,
+                            enum QSerialPort::DataBits dataBits,
+                            enum QSerialPort::FlowControl flowControl,
+                            enum QSerialPort::Parity parity,
+                            enum QSerialPort::StopBits stopBits);
+    void clearFixedParameters();
+
+private slots:
+    void showPortInfos(int index);
+
 private:
     Ui::SerialSetup *ui;
+
+    bool m_isFixedParameter;
+
+    void fillPortInfos();
+    void fillPortParameters();
 };
 
 #endif // SERIALSETUP_H

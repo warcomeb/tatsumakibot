@@ -28,8 +28,6 @@
 #include "serialsetup.h"
 #include "ui_serialsetup.h"
 
-/* TODO: Aggiungere controllo per parametri fissi di connessione! */
-
 SerialSetup::SerialSetup(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SerialSetup),
@@ -38,8 +36,9 @@ SerialSetup::SerialSetup(QWidget *parent) :
 {
     ui->setupUi(this);
 
-//    connect(ui->buttonBox, SIGNAL(clicked()),
-//            this, SLOT(apply()));
+    connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(apply()));
+    connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(noApply()));
+
     connect(ui->portsComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(showPortInfos(int)));
 
@@ -291,12 +290,23 @@ void SerialSetup::updateSettings()
 /**
  * @brief SerialSetup::apply
  *
- * This method is a slot called by confirm button. It save the settings selected
+ * This slot is called by confirm button. It save the settings selected
  * by the user and close the dialog.
  */
 void SerialSetup::apply()
 {
     updateSettings();
+    close();
+}
+
+/**
+ * @brief SerialSetup::noApply
+ *
+ * This slot is called by cancel button. It close the dialog without saving the
+ * settings selected by the user.
+ */
+void SerialSetup::noApply()
+{
     close();
 }
 

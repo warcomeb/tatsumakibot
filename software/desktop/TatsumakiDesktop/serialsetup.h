@@ -73,7 +73,9 @@ public:
 
 private slots:
     void showPortInfos(int index);
+
     void apply();
+    void noApply();
 
 private:
     Ui::SerialSetup *ui;

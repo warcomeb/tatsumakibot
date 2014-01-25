@@ -69,6 +69,8 @@ public:
                             enum QSerialPort::StopBits stopBits);
     void clearFixedParameters();
 
+    void fillPortInfos();
+
     SerialSettings getSettings() const;
 
 private slots:
@@ -83,7 +85,6 @@ private:
     bool m_isFixedParameter;
     SerialSettings m_settings;
 
-    void fillPortInfos();
     void fillPortParameters();
 
     void updateSettings();

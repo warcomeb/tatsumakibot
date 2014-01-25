@@ -144,7 +144,6 @@ void SerialSetup::setFixedParameters(enum QSerialPort::BaudRate rate,
                         enum QSerialPort::StopBits stopBits)
 {
     m_isFixedParameter = true;
-    /* TODO: save fixed parameters into settings */
 
     switch (dataBits)
     {

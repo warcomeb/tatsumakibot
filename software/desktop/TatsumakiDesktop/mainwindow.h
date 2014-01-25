@@ -57,6 +57,12 @@ private:
 
     QSerialPort* m_serialPort;
     SerialSetup* m_serialSetup;
+    SerialSetup::SerialSettings m_serialSettings;
+
+    void initActionsConnections();
+
+    void enableSendingButtons();
+    void disableSendingButtons();
 };
 
 #endif // MAINWINDOW_H

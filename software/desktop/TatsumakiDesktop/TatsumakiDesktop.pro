@@ -18,11 +18,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    serialsetup.cpp
+    serialsetup.cpp \
+    protocol.cpp
 
 HEADERS  += mainwindow.h \
     metadata.h \
-    serialsetup.h
+    serialsetup.h \
+    protocol.h
 
 FORMS    += mainwindow.ui \
     serialsetup.ui

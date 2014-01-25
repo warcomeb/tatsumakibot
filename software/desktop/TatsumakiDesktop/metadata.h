@@ -28,12 +28,21 @@
 #ifndef METADATA_H
 #define METADATA_H
 
+#include <QSerialPort>
+
 #define ORGANIZATION_NAME    "Marco Giammarini"
 #define ORGANIZATION_DOMAIN  "warcomeb.it"
 
-#define PROJECT_NAME         "TatsumakiBot Interdace"
+#define PROJECT_NAME         "TatsumakiBot Interface"
 #define PROJECT_VERSION      "0.1.0"
 
 #define RELEASE_DATE         "Xxxxxxx NN, 2014"
+
+/* Serial communication parameters */
+#define SERIAL_BAUDRATE      QSerialPort::Baud38400
+#define SERIAL_DATABITS      QSerialPort::Data8
+#define SERIAL_FLOWCONTROL   QSerialPort::NoFlowControl
+#define SERIAL_PARITY        QSerialPort::NoParity
+#define SERIAL_STOPBITS      QSerialPort::OneStop
 
 #endif // METADATA_H

@@ -29,6 +29,7 @@
 #define MAINWINDOW_H
 
 #include "serialsetup.h"
+#include "protocol.h"
 
 #include <QMainWindow>
 
@@ -52,12 +53,23 @@ private slots:
     void connectSerialPort();
     void disconnectSerialPort();
 
+    void sendSerialData();
+    void receiveSerialData();
+
 private:
     Ui::MainWindow *ui;
 
     QSerialPort* m_serialPort;
     SerialSetup* m_serialSetup;
     SerialSetup::SerialSettings m_serialSettings;
+    Protocol::BusStatus m_serialBusStatus;
+    bool m_isSerialConnected;
+
+    bool m_speedUp;
+    Qt::Key m_keyDirection;
+
+    void keyPressEvent(QKeyEvent* e);
+    void keyReleaseEvent(QKeyEvent* e);
 
     void initActionsConnections();
 

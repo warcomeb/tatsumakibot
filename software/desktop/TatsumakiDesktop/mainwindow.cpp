@@ -31,11 +31,16 @@
 #include "metadata.h"
 
 #include <QMessageBox>
+#include <QKeyEvent>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_serialPort(0)
+    m_serialPort(0),
+    m_isSerialConnected(false),
+    m_speedUp(false),
+    m_keyDirection(Qt::Key_unknown)
 {
     ui->setupUi(this);
     setWindowTitle(QString(PROJECT_NAME) + " v." + QString(PROJECT_VERSION));
@@ -51,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
                                       SERIAL_FLOWCONTROL,
                                       SERIAL_PARITY,
                                       SERIAL_STOPBITS);
+    m_serialBusStatus = Protocol::Free;
 
     // Connect signals to slots
     initActionsConnections();
@@ -70,6 +76,209 @@ MainWindow::~MainWindow()
     }
 
     delete ui;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent* e)
+{
+    if (m_isSerialConnected)
+    {
+        switch (e->key())
+        {
+        case Qt::Key_Up:
+        case Qt::Key_W:
+            m_keyDirection = Qt::Key_Up;
+
+            ui->downButton->setChecked(false);
+            ui->downMoreButton->setChecked(false);
+            ui->rightButton->setChecked(false);
+            ui->rightMoreButton->setChecked(false);
+            ui->leftButton->setChecked(false);
+            ui->leftMoreButton->setChecked(false);
+
+            if (!m_speedUp)
+            {
+                ui->upButton->setChecked(true);
+                ui->upMoreButton->setChecked(false);
+            }
+            else
+            {
+                ui->upButton->setChecked(false);
+                ui->upMoreButton->setChecked(true);
+            }
+            break;
+        case Qt::Key_Down:
+        case Qt::Key_Z:
+            m_keyDirection = Qt::Key_Down;
+
+            ui->upButton->setChecked(false);
+            ui->upMoreButton->setChecked(false);
+            ui->rightButton->setChecked(false);
+            ui->rightMoreButton->setChecked(false);
+            ui->leftButton->setChecked(false);
+            ui->leftMoreButton->setChecked(false);
+
+            if (!m_speedUp)
+            {
+                ui->downButton->setChecked(true);
+                ui->downMoreButton->setChecked(false);
+            }
+            else
+            {
+                ui->downButton->setChecked(false);
+                ui->downMoreButton->setChecked(true);
+            }
+            break;
+        case Qt::Key_Right:
+        case Qt::Key_D:
+            m_keyDirection = Qt::Key_Right;
+
+            ui->upButton->setChecked(false);
+            ui->upMoreButton->setChecked(false);
+            ui->downButton->setChecked(false);
+            ui->downMoreButton->setChecked(false);
+            ui->leftButton->setChecked(false);
+            ui->leftMoreButton->setChecked(false);
+
+            if (!m_speedUp)
+            {
+                ui->rightButton->setChecked(true);
+                ui->rightMoreButton->setChecked(false);
+            }
+            else
+            {
+                ui->rightButton->setChecked(false);
+                ui->rightMoreButton->setChecked(true);
+            }
+            break;
+        case Qt::Key_Left:
+        case Qt::Key_A:
+            m_keyDirection = Qt::Key_Left;
+
+            ui->upButton->setChecked(false);
+            ui->upMoreButton->setChecked(false);
+            ui->downButton->setChecked(false);
+            ui->downMoreButton->setChecked(false);
+            ui->rightButton->setChecked(false);
+            ui->rightMoreButton->setChecked(false);
+
+            if (!m_speedUp)
+            {
+                ui->leftButton->setChecked(true);
+                ui->leftMoreButton->setChecked(false);
+            }
+            else
+            {
+                ui->leftButton->setChecked(false);
+                ui->leftMoreButton->setChecked(true);
+            }
+            break;
+        case Qt::Key_Shift:
+            qDebug() << "shift checked!";
+            m_speedUp = true;
+            switch (m_keyDirection)
+            {
+            case Qt::Key_Up:
+            case Qt::Key_W:
+                ui->upButton->setChecked(false);
+                ui->upMoreButton->setChecked(true);
+                break;
+            case Qt::Key_Down:
+            case Qt::Key_Z:
+                ui->downButton->setChecked(false);
+                ui->downMoreButton->setChecked(true);
+                break;
+            case Qt::Key_Right:
+            case Qt::Key_D:
+                ui->rightButton->setChecked(false);
+                ui->rightMoreButton->setChecked(true);
+                break;
+            case Qt::Key_Left:
+            case Qt::Key_A:
+                ui->leftButton->setChecked(false);
+                ui->leftMoreButton->setChecked(true);
+                break;
+            default:
+                // Nothing
+                break;
+            }
+            break;
+        case Qt::Key_Space:
+        case Qt::Key_S:
+            break;
+        default:
+            // Nothing
+            break;
+        }
+    }
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent* e)
+{
+    if (m_isSerialConnected)
+    {
+        switch (e->key())
+        {
+        case Qt::Key_Up:
+        case Qt::Key_W:
+
+        case Qt::Key_Down:
+        case Qt::Key_Z:
+
+        case Qt::Key_Right:
+        case Qt::Key_D:
+
+        case Qt::Key_Left:
+        case Qt::Key_A:
+            m_keyDirection = Qt::Key_unknown;
+
+            ui->upButton->setChecked(false);
+            ui->upMoreButton->setChecked(false);
+            ui->downButton->setChecked(false);
+            ui->downMoreButton->setChecked(false);
+            ui->rightButton->setChecked(false);
+            ui->rightMoreButton->setChecked(false);
+            ui->leftButton->setChecked(false);
+            ui->leftMoreButton->setChecked(false);
+
+            break;
+        case Qt::Key_Shift:
+            m_speedUp = false;
+
+            switch (m_keyDirection)
+            {
+            case Qt::Key_Up:
+            case Qt::Key_W:
+                ui->upButton->setChecked(true);
+                ui->upMoreButton->setChecked(false);
+                break;
+            case Qt::Key_Down:
+            case Qt::Key_Z:
+                ui->downButton->setChecked(true);
+                ui->downMoreButton->setChecked(false);
+                break;
+            case Qt::Key_Right:
+            case Qt::Key_D:
+                ui->rightButton->setChecked(true);
+                ui->rightMoreButton->setChecked(false);
+                break;
+            case Qt::Key_Left:
+            case Qt::Key_A:
+                ui->leftButton->setChecked(true);
+                ui->leftMoreButton->setChecked(false);
+                break;
+            default:
+                // Nothing
+                break;
+            }
+            break;
+        case Qt::Key_Space:
+        case Qt::Key_S:
+            break;
+        default:
+            // Nothing
+            break;
+        }
+    }
 }
 
 /**
@@ -129,6 +338,8 @@ MainWindow::connectSerialPort ()
                     && m_serialPort->setStopBits(m_serialSettings.stopBits)
                     && m_serialPort->setFlowControl(m_serialSettings.flowControl))
             {
+                m_isSerialConnected = true;
+
                 // Change connect button and signal
                 ui->serialConnect->setText("Disconnect");
                 ui->serialConnect->setEnabled(true);
@@ -187,6 +398,8 @@ void MainWindow::disconnectSerialPort ()
     {
         // Disable commuication port
         m_serialPort->close();
+        m_isSerialConnected = false;
+
 
         // Disconnect comm signals
         //disconnect(m_commPort, SIGNAL(readyRead()), this, SLOT(readSerialData()));
@@ -215,6 +428,48 @@ void MainWindow::disconnectSerialPort ()
 void MainWindow::initActionsConnections()
 {
     connect(ui->serialSelect, SIGNAL(clicked()), this, SLOT(setupSerialPort()));
+}
+
+void MainWindow::sendSerialData()
+{
+//    if ((sender() == m_updateTimer) && (m_busStatus == Protocol::Free))
+//    {
+//        if (m_activeNode.size() > 0)
+//        {
+//            m_remainingNode = m_activeNode.size();
+//            m_currentNode   = 0;
+
+//            m_message.command = Protocol::KeepAlive;
+//            m_message.boardId = m_activeNode[m_currentNode];
+//        }
+//        else
+//        {
+//            return;
+//        }
+//    }
+//    else if ((sender() == ui->sendRoutine) || (sender() == ui->sendAlert))
+//    {
+
+//    }
+
+//    m_busStatus = Protocol::MessageDelivery;
+
+//    QByteArray messageArray;
+//    Protocol::composeMessage(m_message,messageArray);
+//    m_commPort->write(messageArray);
+
+//    /* TODO: debug code! */
+
+//    /* TODO: un timeout lo facciamo partire di 2-3s? */
+
+//    ui->status->setText("Waiting reply...");
+
+//    m_busStatus = Protocol::WaintingReply;
+}
+
+void MainWindow::receiveSerialData()
+{
+
 }
 
 void MainWindow::enableSendingButtons()

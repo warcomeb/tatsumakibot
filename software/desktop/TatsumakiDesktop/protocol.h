@@ -43,13 +43,37 @@ class Protocol
 
 public:
 
+    static const char messageStart;
+    static const char messageStop;
+
+    /**
+     * @brief The BusStatus enum
+     */
+    enum BusStatus
+    {
+        Free,
+        MessageDelivery,
+        WaintingReply,
+        MessageReception,
+        MessageReceived
+    };
+
     /**
      * @brief The MessageType enum
      */
     enum MessageType
     {
-        RobotMove,
+        RobotMove  = 0x10,
         None
+    };
+
+    enum MotorMove
+    {
+        MoveNone   = 0x00,
+        MoveUp     = 0x01,
+        MoveDown   = 0x02,
+        MoveRight  = 0x04,
+        MoveLeft   = 0x08
     };
 
     /**
@@ -58,6 +82,10 @@ public:
     struct MessageParameters
     {
         MessageType  command;
+
+        // Robot move parameters
+        quint8 speed;                       /**< Motor speed selected by user */
+        MotorMove direction;                /**< Direction of robot movements */
     };
 
 

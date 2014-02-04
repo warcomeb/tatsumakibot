@@ -27,8 +27,8 @@
 
 #include "protocol.h"
 
-#define PROTOCOL_START             '#'
-#define PROTOCOL_STOP              '!'
+const char Protocol::messageStart = '#';
+const char Protocol::messageStop  = '!';
 
 /**
  * @brief Protocol::composeMessage
@@ -41,7 +41,7 @@ void Protocol::composeMessage(const MessageParameters parameters,  QByteArray &s
     string.clear();
 
     // Add start message char
-    string.append(PROTOCOL_START);
+    string.append(messageStart);
 
     // Add function ID
     string.append((QString("%1").arg(parameters.command,2,16,QChar('0'))).toUpper());
@@ -50,7 +50,8 @@ void Protocol::composeMessage(const MessageParameters parameters,  QByteArray &s
     switch (parameters.command)
     {
     case RobotMove:
-        /* TODO: ... */
+        string.append((QString("%1").arg((qint8)parameters.direction,2,16,QChar('0'))).toUpper());
+        string.append((QString("%1").arg((qint8)parameters.speed,2,16,QChar('0'))).toUpper());
         break;
     default:
         Q_ASSERT(0);
@@ -62,7 +63,7 @@ void Protocol::composeMessage(const MessageParameters parameters,  QByteArray &s
     string.append((QString("%1").arg(checksum,2,16,QChar('0'))).toUpper());
 
     // Add end message char
-    string.append(PROTOCOL_STOP);
+    string.append(messageStop);
 }
 
 /**
@@ -72,7 +73,14 @@ void Protocol::composeMessage(const MessageParameters parameters,  QByteArray &s
  */
 void Protocol::messageToString(const QByteArray &message, QString &string)
 {
+    string.clear();
+    string.append(messageStart);
 
+    // Delete start and end chars
+    for (int i = 1; i < message.size()-1; ++i)
+        string.append(message[i]);
+
+    string.append(messageStop);
 }
 
 /**

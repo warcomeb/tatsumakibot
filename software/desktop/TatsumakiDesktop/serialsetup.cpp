@@ -230,7 +230,7 @@ void SerialSetup::setFixedParameters(enum QSerialPort::BaudRate rate,
         break;
     }
     ui->stopBitsComboBox->setDisabled(true);
-qDebug() <<rate;
+
     ui->rateComboBox->clear();
     ui->rateComboBox->addItem(QString::number(rate), rate);
     ui->rateComboBox->setDisabled(true);
@@ -267,7 +267,7 @@ void SerialSetup::updateSettings()
     m_settings.baudrate = static_cast<QSerialPort::BaudRate>(
         ui->rateComboBox->itemData(ui->rateComboBox->currentIndex()).toInt());
     m_settings.baudrateString = QString::number(m_settings.baudrate);
-    qDebug() << m_settings.baudrate << "-" << m_settings.baudrateString;
+
     // Data bits
     m_settings.dataBits = static_cast<QSerialPort::DataBits>(
         ui->dataBitsComboBox->itemData(ui->dataBitsComboBox->currentIndex()).toInt());

@@ -64,9 +64,11 @@ private:
     SerialSetup::SerialSettings m_serialSettings;
     Protocol::BusStatus m_serialBusStatus;
     bool m_isSerialConnected;
+    QByteArray m_serialReceiveBuffer;
 
     bool m_speedUp;
-    Qt::Key m_keyDirection;
+
+    Protocol::MessageParameters m_message;
 
     void keyPressEvent(QKeyEvent* e);
     void keyReleaseEvent(QKeyEvent* e);

@@ -296,7 +296,7 @@ MainWindow::setupSerialPort ()
         m_serialSetup->exec();
         m_serialSettings = m_serialSetup->getSettings();
 
-        if (m_serialSettings.name.isEmpty())
+        if (QString::compare(QString("No Port"),m_serialSettings.name) == 0)
         {
             QMessageBox::critical(this, tr("Error"),
                 tr("No port selected!"));
@@ -325,13 +325,21 @@ MainWindow::setupSerialPort ()
 void
 MainWindow::connectSerialPort ()
 {
-    if (!m_serialPort && m_serialSettings.name.isEmpty())
+    if ((!m_serialPort || !m_serialPort->isOpen()) &&
+        (QString::compare(QString("No Port"),m_serialSettings.name)!=0))
     {
         // enable serial connection:
         m_serialPort = new QSerialPort(this);
         m_serialPort->setPortName(m_serialSettings.name);
         if (m_serialPort->open(QIODevice::ReadWrite))
         {
+            qDebug() << "Port " << m_serialSettings.name << " "
+                     << m_serialSettings.baudrate << "-" << m_serialSettings.dataBits << "-"
+                     << m_serialSettings.parity << "-" << m_serialSettings.stopBits << "-"
+                     << m_serialSettings.flowControl;
+
+            // WARNING: no problem for warning message
+            // https://qt-project.org/forums/viewthread/36296
             if (m_serialPort->setBaudRate(m_serialSettings.baudrate)
                     && m_serialPort->setDataBits(m_serialSettings.dataBits)
                     && m_serialPort->setParity(m_serialSettings.parity)
@@ -343,14 +351,14 @@ MainWindow::connectSerialPort ()
                 // Change connect button and signal
                 ui->serialConnect->setText("Disconnect");
                 ui->serialConnect->setEnabled(true);
-                disconnect(ui->serialConnect, SIGNAL(clicked()), this, SLOT(connectSerial()));
-                connect(ui->serialConnect, SIGNAL(clicked()), this, SLOT(disconnectSerial()));
+                disconnect(ui->serialConnect, SIGNAL(clicked()), this, SLOT(connectSerialPort()));
+                connect(ui->serialConnect, SIGNAL(clicked()), this, SLOT(disconnectSerialPort()));
 
                 // connect signals and activate buttons
                 enableSendingButtons();
 
                 // Update status line
-                ui->serialStatus->setText(tr("Connected to %1 : %2, %3, %4, %5, %6")
+                ui->serialStatus->setText(tr("%1: %2-%3-%4-%5-%6")
                     .arg(m_serialSettings.name).arg(QString::number(m_serialSettings.baudrate))
                     .arg(m_serialSettings.dataBitsString).arg(m_serialSettings.parityString)
                     .arg(m_serialSettings.stopBitsString).arg(m_serialSettings.flowControlString));
@@ -359,18 +367,22 @@ MainWindow::connectSerialPort ()
             else
             {
                 m_serialPort->close();
+
                 QMessageBox::critical(this, tr("Error"),
                     tr("Can't configure the serial port: %1,\nError code: %2")
-                    .arg(m_serialSettings.name).arg(m_serialPort->error()));
+                    .arg(m_serialSettings.name).arg(m_serialPort->errorString()));
 
                 ui->serialStatus->setText(tr("Open error"));
             }
         }
         else
         {
+            m_serialPort->close();
+
+
             QMessageBox::critical(this, tr("Error"),
                 tr("Can't opened the serial port: %1,\nEerror code: %2")
-                .arg(m_serialSettings.name).arg(m_serialPort->error()));
+                .arg(m_serialSettings.name).arg(m_serialPort->errorString()));
 
             ui->serialStatus->setText(tr("Configure error"));
         }
@@ -407,8 +419,8 @@ void MainWindow::disconnectSerialPort ()
         // Change connect button and signal
         ui->serialConnect->setText("Connect");
         ui->serialConnect->setEnabled(true);
-        disconnect(ui->serialConnect, SIGNAL(clicked()), this, SLOT(disconnectSerial()));
-        connect(ui->serialConnect, SIGNAL(clicked()), this, SLOT(connectSerial()));
+        disconnect(ui->serialConnect, SIGNAL(clicked()), this, SLOT(disconnectSerialPort()));
+        connect(ui->serialConnect, SIGNAL(clicked()), this, SLOT(connectSerialPort()));
 
         delete m_serialPort;
         m_serialPort = 0;

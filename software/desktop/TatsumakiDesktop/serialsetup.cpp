@@ -28,6 +28,8 @@
 #include "serialsetup.h"
 #include "ui_serialsetup.h"
 
+#include <QDebug>
+
 SerialSetup::SerialSetup(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SerialSetup),
@@ -62,6 +64,7 @@ void SerialSetup::fillPortInfos()
 {
     // Clear combo box
     ui->portsComboBox->clear();
+    ui->portsComboBox->addItem("No Port",0);
     // Scan and update combo box with the name of ports
     foreach (QSerialPortInfo info, QSerialPortInfo::availablePorts())
     {
@@ -112,7 +115,7 @@ void SerialSetup::showPortInfos(int index)
     {
         QStringList list = ui->portsComboBox->itemData(index).toStringList();
 
-        if (list.size() > 0)
+        if (list.size() > 0 && !m_isFixedParameter)
         {
             // Add each possible baudrate
             QSerialPortInfo portInfo(list.at(0));
@@ -227,9 +230,9 @@ void SerialSetup::setFixedParameters(enum QSerialPort::BaudRate rate,
         break;
     }
     ui->stopBitsComboBox->setDisabled(true);
-
+qDebug() <<rate;
     ui->rateComboBox->clear();
-    ui->rateComboBox->addItem(QString::number(rate));
+    ui->rateComboBox->addItem(QString::number(rate), rate);
     ui->rateComboBox->setDisabled(true);
 }
 
@@ -264,7 +267,7 @@ void SerialSetup::updateSettings()
     m_settings.baudrate = static_cast<QSerialPort::BaudRate>(
         ui->rateComboBox->itemData(ui->rateComboBox->currentIndex()).toInt());
     m_settings.baudrateString = QString::number(m_settings.baudrate);
-
+    qDebug() << m_settings.baudrate << "-" << m_settings.baudrateString;
     // Data bits
     m_settings.dataBits = static_cast<QSerialPort::DataBits>(
         ui->dataBitsComboBox->itemData(ui->dataBitsComboBox->currentIndex()).toInt());

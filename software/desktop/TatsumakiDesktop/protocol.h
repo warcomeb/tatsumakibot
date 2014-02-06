@@ -40,7 +40,7 @@
  */
 class Protocol
 {
-
+    Q_ENUMS(BusStatus MessageType ReplyMessageType)
 public:
 
     static const char messageStart;
@@ -63,8 +63,18 @@ public:
      */
     enum MessageType
     {
-        RobotMove  = 0x10,
-        None
+        None        = 0x00,
+
+        RobotMove   = 0x10,
+    };
+
+    /**
+     * @brief The ReplyMessageType enum
+     */
+    enum ReplyMessageType
+    {
+        NoneRx      = 0x00,
+        Acknowledge = 0x01,
     };
 
     enum MotorMove
@@ -88,14 +98,23 @@ public:
         MotorMove direction;                /**< Direction of robot movements */
     };
 
+    /**
+     * @brief The ReplyMessageParameters struct
+     */
+    struct ReplyMessageParameters
+    {
+        ReplyMessageType  command;
+    };
 
 //    static void clearParametersList(Parameters &parameters);
 
     static void composeMessage(const MessageParameters parameters,  QByteArray &string);
     static void messageToString(const QByteArray &message, QString &string);
 
-//    static bool controlReceivedMessage(const Parameters &parameters,
-//                                       const QByteArray &receivedMessage);
+    static bool controlReceivedMessage(const MessageParameters &parameters,
+                                       const QByteArray &receivedMessage);
+    static void parseReceivedMessage(const QByteArray &receivedMessage,
+                                     ReplyMessageParameters &parameters);
 
     static quint8 computeChecksum(const QByteArray &message, int start, int stop);
 };

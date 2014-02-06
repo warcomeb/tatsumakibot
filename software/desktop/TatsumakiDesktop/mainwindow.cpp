@@ -87,8 +87,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
-//    if (m_isSerialConnected)
-//    {
+    if (m_isSerialConnected)
+    {
         switch (e->key())
         {
         case Qt::Key_Up:
@@ -165,13 +165,13 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
             // Nothing
             break;
         }
-//    }
+    }
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent* e)
 {
-//    if (m_isSerialConnected)
-//    {
+    if (m_isSerialConnected)
+    {
         switch (e->key())
         {
         case Qt::Key_Up:
@@ -214,7 +214,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent* e)
             // Nothing
             break;
         }
-//    }
+    }
 }
 
 /**
@@ -290,6 +290,8 @@ MainWindow::connectSerialPort ()
                 disconnect(ui->serialConnect, SIGNAL(clicked()), this, SLOT(connectSerialPort()));
                 connect(ui->serialConnect, SIGNAL(clicked()), this, SLOT(disconnectSerialPort()));
 
+                connect(m_serialPort, SIGNAL(readyRead()), this, SLOT(receiveSerialData()));
+
                 // connect signals and activate buttons
                 enableSendingButtons();
 
@@ -350,7 +352,7 @@ void MainWindow::disconnectSerialPort ()
 
 
         // Disconnect comm signals
-        //disconnect(m_commPort, SIGNAL(readyRead()), this, SLOT(readSerialData()));
+        disconnect(m_serialPort, SIGNAL(readyRead()), this, SLOT(receiveSerialData()));
 
         // Change connect button and signal
         ui->serialConnect->setText("Connect");
@@ -388,12 +390,12 @@ void MainWindow::sendSerialData()
         QString message;
         Protocol::composeMessage(m_message,messageArray);
         Protocol::messageToString(messageArray,message);
-//        m_serialPort->write(messageArray);
+        m_serialPort->write(messageArray);
 
         // debug code!
         qDebug() << "Serial send message:" << message;
 
-        /* TODO: un timeout lo facciamo partire di 2-3s? */
+        /* TODO: Timeout of 2-3s? */
 
         ui->status->setText("Waiting reply...");
         qDebug() << "Serial waiting reply...";
@@ -420,7 +422,28 @@ void MainWindow::receiveSerialData()
 
         if (m_serialReceiveBuffer.endsWith(Protocol::messageStop))
         {
+            m_serialBusStatus = Protocol::MessageReceived;
 
+            /* Print reply message */
+            QString replyMessage;
+            Protocol::messageToString(m_serialReceiveBuffer,replyMessage);
+
+            ui->status->setText("Message received!");
+            qDebug() << "Serial receive message:" << replyMessage;
+
+            if (!Protocol::controlReceivedMessage(m_message,m_serialReceiveBuffer))
+            {
+                ui->status->setText("Message not compliant!");
+                qDebug() << "Serial receive message not compliant!";
+            }
+            else
+            {
+                // Parse Message
+                Protocol::parseReceivedMessage(m_serialReceiveBuffer,m_replyMessage);
+                // TODO: do action from serial message!
+            }
+
+            m_serialBusStatus = Protocol::Free;
         }
     }
     else

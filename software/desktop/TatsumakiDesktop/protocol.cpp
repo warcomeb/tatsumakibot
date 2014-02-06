@@ -27,6 +27,10 @@
 
 #include "protocol.h"
 
+#include <QDebug>
+
+#define PROTOCOL_ACK_LENGTH         6
+
 const char Protocol::messageStart = '#';
 const char Protocol::messageStop  = '!';
 
@@ -35,7 +39,8 @@ const char Protocol::messageStop  = '!';
  * @param parameters
  * @param string
  */
-void Protocol::composeMessage(const MessageParameters parameters,  QByteArray &string)
+void Protocol::composeMessage(const Protocol::MessageParameters parameters,
+                              QByteArray &string)
 {
     // Clear all chars in a string
     string.clear();
@@ -104,3 +109,60 @@ quint8 Protocol::computeChecksum(const QByteArray &message, int start, int stop)
     return ((quint8) -lrc);
 }
 
+bool Protocol::controlReceivedMessage(const Protocol::MessageParameters &parameters,
+                                      const QByteArray &receivedMessage)
+{
+    qDebug() << "Serial receive message: control message";
+
+    // Control checksum
+    quint8 checksum = computeChecksum(receivedMessage,1,receivedMessage.length()-3);
+    QString checksumString = (QString("%1").arg(checksum,2,16,QChar('0'))).toUpper();
+    if (QString::compare(checksumString,QString(receivedMessage.right(3).left(2))) != 0)
+    {
+        qDebug() << "Serial receive message: checksum error compute (" <<
+                    checksumString << ") received (" << QString(receivedMessage.right(3).left(2));
+        return false;
+    }
+    qDebug() << "Serial receive message: checksum passed";
+
+
+    ReplyMessageType receivedCommand = static_cast<ReplyMessageType>(
+                QString(receivedMessage.left(3).right(2)).toUInt(0,16));
+
+    // Manage message
+    switch(parameters.command)
+    {
+    case Protocol::RobotMove:
+        if (receivedCommand != Protocol::Acknowledge)
+        {
+            qDebug() << "Serial receive message: command reply error (" <<
+                        QString(receivedMessage.left(3).right(2)) << ")";
+            return false;
+        }
+        qDebug() << "Serial receive message: command reply passed!";
+
+        if (receivedMessage.length() != PROTOCOL_ACK_LENGTH)
+        {
+            qDebug() << "Serial receive message: message length error!";
+            return false;
+        }
+        qDebug() << "Serial receive message: message length passed!";
+
+        break;
+    default:
+        qDebug() << "Serial receive message: not requested!!";
+        return false;
+    }
+
+    qDebug() << "Serial receive message: control message <<OK>>";
+    return true;
+}
+
+void Protocol::parseReceivedMessage(const QByteArray &receivedMessage,
+                                    Protocol::ReplyMessageParameters &parameters)
+{
+    qDebug() << "Serial receive message: parse message";
+
+    parameters.command = static_cast<ReplyMessageType>(
+                QString(receivedMessage.left(3).right(2)).toUInt(0,16));
+}

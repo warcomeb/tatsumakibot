@@ -69,6 +69,7 @@ private:
     bool m_speedUp;
 
     Protocol::MessageParameters m_message;
+    Protocol::ReplyMessageParameters m_replyMessage;
 
     void keyPressEvent(QKeyEvent* e);
     void keyReleaseEvent(QKeyEvent* e);

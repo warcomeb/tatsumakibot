@@ -78,6 +78,16 @@
     MOTOR1_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN2_NUMBER); \
     } while (0)
 
+#define MOTOR1_UP() do{     \
+    MOTOR1_IN1_PSOR |= GPIO_PSOR_PTSO(MOTOR1_IN1_NUMBER); \
+    MOTOR1_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN2_NUMBER); \
+    } while (0)
+
+#define MOTOR1_DOWN() do{     \
+    MOTOR1_IN2_PSOR |= GPIO_PSOR_PTSO(MOTOR1_IN2_NUMBER); \
+    MOTOR1_IN1_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN1_NUMBER); \
+    } while (0)
+
 #define MOTOR2_IN1_PIN           PORTC_PCR6
 #define MOTOR2_IN1_NUMBER        GPIO_PIN(6)
 #define MOTOR2_IN1_PDOR          GPIOC_PDOR
@@ -101,6 +111,15 @@
     MOTOR2_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN2_NUMBER); \
     } while (0)
 
+#define MOTOR2_UP() do{     \
+    MOTOR2_IN1_PSOR |= GPIO_PSOR_PTSO(MOTOR2_IN1_NUMBER); \
+    MOTOR2_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN2_NUMBER); \
+    } while (0)
+
+#define MOTOR2_DOWN() do{     \
+    MOTOR2_IN2_PSOR |= GPIO_PSOR_PTSO(MOTOR2_IN2_NUMBER); \
+    MOTOR2_IN1_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN1_NUMBER); \
+    } while (0)
 
 /* OHIBoard LEDs */
 #define SYS_LED_PIN              PORTD_PCR4
@@ -144,5 +163,18 @@
 #define TEST_TOGGLE()            (TEST_PTOR |= GPIO_PTOR_PTTO(TEST_NUMBER))
 
 #endif
+
+typedef enum _Board_Errors
+{
+    /* Communication errors */
+    ERRORS_COMM_OK,
+    ERRORS_COMM_JUST_ACTIVE,
+    ERRORS_COMM_NO_ACTIVE,
+    ERRORS_COMM_NOT_FOR_ME,
+    ERRORS_COMM_NOT_COMPLIANT,
+    ERRORS_COMM_WRONG_LENGHT,
+    ERRORS_COMM_CHECKSUM,
+    ERRORS_COMM_WRONG_COMMAND,
+} Board_Errors;
 
 #endif /* __BOARD_H */

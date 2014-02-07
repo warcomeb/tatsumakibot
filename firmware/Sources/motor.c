@@ -28,6 +28,34 @@
  * @brief Motor functions implementation.
  */
 
-#include "board.h"
-
 #include "motor.h"
+
+#define MOTOR_MAX_SPEED          80 /**< Define the max speed of the motor based on PWM duty cycle */
+
+static Ftm_Config Motor_pwmConfig = {
+    .mode              = FTM_MODE_PWM,
+
+    .timerFrequency    = 50000,
+    .initCounter       = 0,
+
+    .pins              = {FTM_PINS_PTB0,FTM_PINS_PTB1,FTM_PINS_STOP},
+    .duty              = {0.5 * 32768, 0.5 * 32768},
+    
+    .configurationBits = FTM_CONFIG_PWM_EDGE_ALIGNED | FTM_CONFIG_PWM_POLARITY_LOW | 0,
+};
+
+void Motor_init (void)
+{
+    Ftm_init(FTM1,0,&Motor_pwmConfig);
+}
+
+/**
+ * 
+ * @param direction 
+ * @param speed
+ */
+Board_Errors Motor_move (Motor_Direction direction, uint8_t speed)
+{
+    if (speed > MOTOR_MAX_SPEED)
+        return ERRORS_MOTOR_WRONG_SPEED;
+}

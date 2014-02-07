@@ -175,6 +175,9 @@ typedef enum _Board_Errors
     ERRORS_COMM_WRONG_LENGHT,
     ERRORS_COMM_CHECKSUM,
     ERRORS_COMM_WRONG_COMMAND,
+    
+    /* Motors errors */
+    ERRORS_MOTOR_WRONG_SPEED,
 } Board_Errors;
 
 #endif /* __BOARD_H */

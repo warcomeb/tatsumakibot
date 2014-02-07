@@ -31,6 +31,19 @@
 #ifndef __MOTOR_H
 #define __MOTOR_H
 
+#include "board.h"
 
+typedef enum _Motor_Direction
+{
+    MOTOR_DIRECTION_NONE,
+    MOTOR_DIRECTION_UP,
+    MOTOR_DIRECTION_DOWN,
+    MOTOR_DIRECTION_RIGHT,
+    MOTOR_DIRECTION_LEFT,
+} Motor_Direction;
+
+void Motor_init (void);
+
+Board_Errors Motor_move (Motor_Direction direction, uint8_t speed);
 
 #endif /* __MOTOR_H */

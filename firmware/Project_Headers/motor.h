@@ -35,12 +35,33 @@
 
 typedef enum _Motor_Direction
 {
-    MOTOR_DIRECTION_NONE,
+    MOTOR_DIRECTION_STOP,
     MOTOR_DIRECTION_UP,
     MOTOR_DIRECTION_DOWN,
     MOTOR_DIRECTION_RIGHT,
     MOTOR_DIRECTION_LEFT,
+    
+    MOTOR_DIRECTION_NONE = 0xFF
 } Motor_Direction;
+
+typedef struct Motor_Config
+{
+    volatile uint32_t* enable1PinPtr;
+    volatile uint32_t* enable1PinDirectionPtr;
+    volatile uint32_t* enable1ClearPtr;
+    volatile uint32_t* enable1SetPtr;
+    uint32_t enable1PinNumber;
+    uint8_t enable1PinMux;
+    
+    volatile uint32_t* enable2PinPtr;
+    volatile uint32_t* enable2PinDirectionPtr;
+    volatile uint32_t* enable2ClearPtr;
+    volatile uint32_t* enable2SetPtr;
+    uint32_t enable2PinNumber;
+    uint8_t enable2PinMux;
+
+    Ftm_Channels pwmChannelOutput;
+} Motor_Config;
 
 void Motor_init (void);
 

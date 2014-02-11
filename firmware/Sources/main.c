@@ -41,6 +41,8 @@
 #include "pinout.h"
 #include "timer.h"
 
+#include "motor.h"
+
 int main(void)
 {
 int counter = 0;
@@ -70,6 +72,8 @@ int counter = 0;
     SYS_LED_TOGGLE();
     Timer_delay(500);
     ERR_LED_TOGGLE();
+    
+    Motor_init();
     
 for(;;) {	   
 counter++;

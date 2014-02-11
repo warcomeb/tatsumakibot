@@ -48,6 +48,7 @@
 /* TODO */
 #define COMM_CMD_ACK                    0x01
 #define COMM_CMD_ACK_LENGTH             6
+#define COMM_CMD_NACK                   0x03
 
 /* WiFi to Robot: */
 /* TODO */
@@ -157,15 +158,24 @@ static uint8_t Comm_computeChecksum (const uint8_t* data, uint8_t start, uint16_
     return ((uint8_t) -lrc);
 }
 
+typedef enum _Comm_AcknowledgeType
+{
+    COMM_ACKNOWLEDGE_ACK,
+    COMM_ACKNOWLEDGE_NACK,    
+} Comm_AcknowledgeType;
+
 /**
  * 
  */
-static void Comm_composeAcknowledgeMessage (void)
+static void Comm_composeAcknowledgeMessage (Comm_AcknowledgeType ackType)
 {
     uint8_t checksum;
     
     Comm_txMessage.header.startChar = COMM_START;
-    u8tx(Comm_txMessage.header.command,COMM_CMD_ACK);
+    if (ackType == COMM_ACKNOWLEDGE_ACK)
+        u8tx(Comm_txMessage.header.command,COMM_CMD_ACK);
+    else
+        u8tx(Comm_txMessage.header.command,COMM_CMD_NACK);
     checksum = Comm_computeChecksum(&Comm_txMessage.buffer[1],1,COMM_CMD_ACK_LENGTH-3);
     u8tx(Comm_txMessage.ack.checksum,checksum);
     Comm_txMessage.ack.endChar = COMM_END;
@@ -223,10 +233,16 @@ Board_Errors Comm_parseCommand (void)
             
             xtu8(Comm_rxMessage.robotMove.direction,&direction,2);
             xtu8(Comm_rxMessage.robotMove.speed,&speed,2);
-            //Motor_move(direction,speed);
-            
-            /* If the message does't have any problem, we reply with ACK */
-            Comm_composeAcknowledgeMessage();
+            if (Motor_move(direction,speed) == ERRORS_MOTOR_OK)
+            {
+                /* If the message does't have any problem, we reply with ACK */
+                Comm_composeAcknowledgeMessage(COMM_ACKNOWLEDGE_ACK);
+            }
+            else
+            {
+                /* Otherwise, we reply with NACK */
+                Comm_composeAcknowledgeMessage(COMM_ACKNOWLEDGE_NACK);                
+            }
             Comm_sendMessage();
             break;
         default:

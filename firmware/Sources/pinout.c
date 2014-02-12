@@ -35,6 +35,10 @@ void setPinout (void)
 {
 #if (PCB_VERSION == 0)
     
+    COMMUART_RX_PIN = PORT_PCR_MUX(COMMUART_RX_MUX);
+    COMMUART_TX_PIN = PORT_PCR_MUX(COMMUART_TX_MUX);
+    Uart_pinEnabled(COMMUART);
+    
     SYS_LED_PIN = PORT_PCR_MUX(SYS_LED_MUX);
     ERR_LED_PIN = PORT_PCR_MUX(ERR_LED_MUX);
     

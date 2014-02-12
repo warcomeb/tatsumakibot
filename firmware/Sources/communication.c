@@ -35,7 +35,7 @@
 
 #define COMM_ACTIVE                     1
 #define COMM_NO_ACTIVE                  0
-#define COMM_BAUDRATE                   57600
+#define COMM_BAUDRATE                   38400
 
 #define COMM_RX_BUFFER_MASK             0xFF
 #define COMM_TX_BUFFER_MASK             0xFF
@@ -55,6 +55,7 @@
 #define COMM_CMD_MOVEROBOT              0x10
 #define COMM_CMD_MOVEROBOT_LENGTH       10
 
+#define COMM_CMD_MAX_LENGTH             20
 
 static union Comm_RxMessageType
 {
@@ -144,10 +145,43 @@ Board_Errors Comm_disable (void)
     }
 }
 
-static uint8_t Comm_computeChecksum (const uint8_t* data, uint8_t start, uint16_t length)
+void Comm_addReceivedChar (void)
+{
+    char c;
+
+    Uart_getChar(Comm_device,&c);
+
+    switch (c)
+    {
+    case COMM_START:
+    case '0': case '1': case '2': case '3': case '4':
+    case '5': case '6': case '7': case '8': case '9':
+    case 'A': case 'B': case 'C': case 'D': case 'E': case 'F':
+        Comm_rxMessage.buffer[Comm_rxBufferIndex] = c;
+        Comm_rxBufferIndex++;
+        Comm_rxBufferIndex &= COMM_RX_BUFFER_MASK;
+        break;
+    case COMM_END:
+        /* If we have received the last char... */
+        Comm_rxMessage.buffer[Comm_rxBufferIndex] = c;
+        Board_taskStatus.flags.commandReady = 1;
+        Comm_rxBufferIndex++;
+        Comm_rxBufferIndex &= COMM_RX_BUFFER_MASK;
+        break;
+    default: /* Wrong char */
+        Comm_rxBufferIndex = 0;
+        /* TODO: Gestire errore!! */
+        break;
+    }
+
+    /* TODO: Errore e resettare il comando!*/
+    if (!Board_taskStatus.flags.commandReady && Comm_rxBufferIndex > COMM_CMD_MAX_LENGTH);
+}
+
+static uint8_t Comm_computeChecksum (const uint8_t* data, uint8_t start, uint8_t length)
 {
     uint8_t lrc = 0;
-    uint16_t i;
+    uint8_t i;
 
     for (i = start; i < length; ++i)
     {

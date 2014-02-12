@@ -41,6 +41,7 @@
 #include "pinout.h"
 #include "timer.h"
 
+#include "communication.h"
 #include "motor.h"
 
 int main(void)
@@ -75,9 +76,37 @@ int counter = 0;
     
     Motor_init();
     
-for(;;) {	   
-counter++;
-}
+    Comm_init(COMMUART);
+    Comm_enable();
+    
+    for(;;) 
+    {	   
+        counter++;
+
+        if (Uart_isCharPresent(COMMUART))
+        {
+            Comm_addReceivedChar();
+        }
+        
+        if (Board_taskStatus.flags.commandReady == 1)
+        {
+            switch (Comm_parseCommand())
+            {
+            case ERRORS_COMM_CHECKSUM:
+                break;
+            case ERRORS_COMM_NOT_COMPLIANT:
+                break;
+            case ERRORS_COMM_NOT_FOR_ME:
+                break;
+            case ERRORS_COMM_WRONG_LENGHT:
+                break;
+            default:
+                /* Nothing to do! */
+                break;
+            }
+            Board_taskStatus.flags.commandReady = 0;
+        }
+    }
 
 return 0;
 }

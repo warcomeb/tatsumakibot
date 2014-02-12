@@ -45,14 +45,21 @@
  * Macro for board version.
  * 
  * 0: BreadBoard
- * 1: FRDM-KL25Z
- * 2: LOC028
+ * 1: 
  */
 #define PCB_VERSION              0
 #define PROJECT_NAME             "TatsumakiBot"
 #define PROJECT_COPYRIGTH        "(C) 2013-2014 Marco Giammarini"
 
 #if (PCB_VERSION == 0)
+
+#define COMMUART                 UART4
+#define COMMUART_RX_PIN          PORTE_PCR25
+#define COMMUART_RX_NUMBER       GPIO_PIN(25)
+#define COMMUART_RX_MUX          3
+#define COMMUART_TX_PIN          PORTE_PCR24
+#define COMMUART_TX_NUMBER       GPIO_PIN(24)
+#define COMMUART_TX_MUX          3
 
 /* Motor control pins definitions */
 #define MOTOR1_IN1_PIN           PORTC_PCR4
@@ -73,20 +80,20 @@
 #define MOTOR1_IN2_PTOR          GPIOC_PTOR
 #define MOTOR1_IN2_MUX           1
 
-#define MOTOR1_DISABLE() do{     \
-    MOTOR1_IN1_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN1_NUMBER); \
-    MOTOR1_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN2_NUMBER); \
-    } while (0)
-
-#define MOTOR1_UP() do{     \
-    MOTOR1_IN1_PSOR |= GPIO_PSOR_PTSO(MOTOR1_IN1_NUMBER); \
-    MOTOR1_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN2_NUMBER); \
-    } while (0)
-
-#define MOTOR1_DOWN() do{     \
-    MOTOR1_IN2_PSOR |= GPIO_PSOR_PTSO(MOTOR1_IN2_NUMBER); \
-    MOTOR1_IN1_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN1_NUMBER); \
-    } while (0)
+//#define MOTOR1_DISABLE() do{     \
+//    MOTOR1_IN1_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN1_NUMBER); \
+//    MOTOR1_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN2_NUMBER); \
+//    } while (0)
+//
+//#define MOTOR1_UP() do{     \
+//    MOTOR1_IN1_PSOR |= GPIO_PSOR_PTSO(MOTOR1_IN1_NUMBER); \
+//    MOTOR1_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN2_NUMBER); \
+//    } while (0)
+//
+//#define MOTOR1_DOWN() do{     \
+//    MOTOR1_IN2_PSOR |= GPIO_PSOR_PTSO(MOTOR1_IN2_NUMBER); \
+//    MOTOR1_IN1_PCOR |= GPIO_PCOR_PTCO(MOTOR1_IN1_NUMBER); \
+//    } while (0)
 
 #define MOTOR2_IN1_PIN           PORTC_PCR6
 #define MOTOR2_IN1_NUMBER        GPIO_PIN(6)
@@ -106,20 +113,20 @@
 #define MOTOR2_IN2_PTOR          GPIOC_PTOR
 #define MOTOR2_IN2_MUX           1
 
-#define MOTOR2_DISABLE() do{     \
-    MOTOR2_IN1_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN1_NUMBER); \
-    MOTOR2_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN2_NUMBER); \
-    } while (0)
-
-#define MOTOR2_UP() do{     \
-    MOTOR2_IN1_PSOR |= GPIO_PSOR_PTSO(MOTOR2_IN1_NUMBER); \
-    MOTOR2_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN2_NUMBER); \
-    } while (0)
-
-#define MOTOR2_DOWN() do{     \
-    MOTOR2_IN2_PSOR |= GPIO_PSOR_PTSO(MOTOR2_IN2_NUMBER); \
-    MOTOR2_IN1_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN1_NUMBER); \
-    } while (0)
+//#define MOTOR2_DISABLE() do{     \
+//    MOTOR2_IN1_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN1_NUMBER); \
+//    MOTOR2_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN2_NUMBER); \
+//    } while (0)
+//
+//#define MOTOR2_UP() do{     \
+//    MOTOR2_IN1_PSOR |= GPIO_PSOR_PTSO(MOTOR2_IN1_NUMBER); \
+//    MOTOR2_IN2_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN2_NUMBER); \
+//    } while (0)
+//
+//#define MOTOR2_DOWN() do{     \
+//    MOTOR2_IN2_PSOR |= GPIO_PSOR_PTSO(MOTOR2_IN2_NUMBER); \
+//    MOTOR2_IN1_PCOR |= GPIO_PCOR_PTCO(MOTOR2_IN1_NUMBER); \
+//    } while (0)
 
 /* OHIBoard LEDs */
 #define SYS_LED_PIN              PORTD_PCR4
@@ -164,6 +171,16 @@
 
 #endif
 
+union Board_TaskStatusType
+{
+    uint8_t requestPending;
+    
+    struct {
+        uint8_t commandReady         :1;
+        uint8_t notUsed              :7;
+    } flags;
+} extern Board_taskStatus;
+
 typedef enum _Board_Errors
 {
     /* Communication errors */
@@ -178,6 +195,8 @@ typedef enum _Board_Errors
     
     /* Motors errors */
     ERRORS_MOTOR_WRONG_SPEED,
+    ERRORS_MOTOR_WRONG_DIRECTION,
+    ERRORS_MOTOR_OK,    
 } Board_Errors;
 
 #endif /* __BOARD_H */

@@ -183,6 +183,8 @@ union Board_TaskStatusType
 
 typedef enum _Board_Errors
 {
+    ERRORS_NOERRORS,
+    
     /* Communication errors */
     ERRORS_COMM_OK,
     ERRORS_COMM_JUST_ACTIVE,

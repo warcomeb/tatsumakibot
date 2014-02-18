@@ -235,6 +235,8 @@ static void Comm_sendMessage (void)
  */
 Board_Errors Comm_parseCommand (void)
 {
+    static Board_Errors errors = ERRORS_NOERRORS;
+    
     static uint8_t rxCommand = 0;
     
     static uint8_t computeChecksum = 0;
@@ -267,7 +269,8 @@ Board_Errors Comm_parseCommand (void)
             
             xtu8(Comm_rxMessage.robotMove.direction,&direction,2);
             xtu8(Comm_rxMessage.robotMove.speed,&speed,2);
-            if (Motor_move(direction,speed) == ERRORS_MOTOR_OK)
+            errors = Motor_move(direction,speed);
+            if (errors == ERRORS_MOTOR_OK)
             {
                 /* If the message does't have any problem, we reply with ACK */
                 Comm_composeAcknowledgeMessage(COMM_ACKNOWLEDGE_ACK);

@@ -31,13 +31,13 @@
 #include "motor.h"
 
 
-#define MOTOR_DEFAULT_SPEED           30 
+#define MOTOR_DEFAULT_SPEED           0.3 
 /** Define the max speed of the motor based on PWM duty cycle */
-#define MOTOR_MAX_SPEED               80 
+#define MOTOR_MAX_SPEED               0.8 
 
-#define MOTOR_SPEED_DIVISION(speed)  (speed/100)
+//#define MOTOR_SPEED_DIVISION(speed)  (speed/100)
 
-static uint8_t Motor_currentSpeed;
+static float Motor_currentSpeed;
 
 static Ftm_Config Motor_pwmConfig = 
 {
@@ -47,8 +47,8 @@ static Ftm_Config Motor_pwmConfig =
     .initCounter       = 0,
 
     .pins              = {FTM_PINS_PTB0,FTM_PINS_PTB1,FTM_PINS_STOP},
-    .duty              = {MOTOR_SPEED_DIVISION(MOTOR_DEFAULT_SPEED) * 32768, 
-                          MOTOR_SPEED_DIVISION(MOTOR_DEFAULT_SPEED) * 32768},
+    .duty              = {0.3 * 32768, 
+                          0.3 * 32768},
     
     .configurationBits = FTM_CONFIG_PWM_EDGE_ALIGNED | FTM_CONFIG_PWM_POLARITY_LOW | 0,
 };
@@ -120,16 +120,20 @@ void Motor_init (void)
  */
 Board_Errors Motor_move (Motor_Direction direction, uint8_t speed)
 {
-    if (speed > MOTOR_MAX_SPEED)
+    static float computeSpeed = 0.0;
+    
+    computeSpeed = (float) speed / 100;
+    
+    if (computeSpeed > MOTOR_MAX_SPEED)
         return ERRORS_MOTOR_WRONG_SPEED;
     
     /* Setup directions */
     
-    if (Motor_currentSpeed != speed)
+    if (Motor_currentSpeed != computeSpeed)
     {
-        Motor_currentSpeed = speed;
-        Ftm_setPwm(FTM1,FTM_CHANNELS_CH0,MOTOR_SPEED_DIVISION(speed) * 32768);
-        Ftm_setPwm(FTM1,FTM_CHANNELS_CH1,MOTOR_SPEED_DIVISION(speed) * 32768);
+        Motor_currentSpeed = computeSpeed;
+        Ftm_setPwm(FTM1,FTM_CHANNELS_CH0,computeSpeed * 32768);
+        Ftm_setPwm(FTM1,FTM_CHANNELS_CH1,computeSpeed * 32768);
     }
     
     switch (direction)
@@ -156,7 +160,8 @@ Board_Errors Motor_move (Motor_Direction direction, uint8_t speed)
         *Motor_left.enable2SetPtr = GPIO_PSOR_PTSO(Motor_left.enable2PinNumber);
         *Motor_left.enable1ClearPtr = GPIO_PCOR_PTCO(Motor_left.enable1PinNumber);
         *Motor_right.enable1SetPtr = GPIO_PSOR_PTSO(Motor_right.enable1PinNumber);
-        *Motor_right.enable2ClearPtr = GPIO_PCOR_PTCO(Motor_right.enable2PinNumber);        
+        *Motor_right.enable2ClearPtr = GPIO_PCOR_PTCO(Motor_right.enable2PinNumber);
+        break;
     case MOTOR_DIRECTION_STOP:
         *Motor_left.enable1ClearPtr = GPIO_PCOR_PTCO(Motor_left.enable1PinNumber);
         *Motor_left.enable2ClearPtr = GPIO_PCOR_PTCO(Motor_left.enable2PinNumber);

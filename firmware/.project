@@ -3,8 +3,6 @@
 	<name>tatsumakibot</name>
 	<comment></comment>
 	<projects>
-		<project location="PARENT-3-PROJECT_LOC/External/ohik60">
-ohik60		</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

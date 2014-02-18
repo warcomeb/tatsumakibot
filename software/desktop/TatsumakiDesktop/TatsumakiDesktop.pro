@@ -9,7 +9,8 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT       += widgets serialport
 } else {
-    include($$QTSERIALPORT_PROJECT_ROOT/src/serialport/qt4support/serialport.prf)
+#    include($$QTSERIALPORT_PROJECT_ROOT/src/serialport/qt4support/serialport.prf)
+    CONFIG += serialport
 }
 
 TARGET = TatsumakiDesktop

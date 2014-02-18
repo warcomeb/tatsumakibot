@@ -45,6 +45,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle(QString(PROJECT_NAME) + " v." + QString(PROJECT_VERSION));
 
+    setFocusPolicy(Qt::StrongFocus);
+
     // Disable sending buttons
     ui->serialConnect->setEnabled(false);
     disableSendingButtons();
@@ -89,81 +91,84 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
 {
     if (m_isSerialConnected)
     {
-        switch (e->key())
+        if(!e->isAutoRepeat())
         {
-        case Qt::Key_Up:
-        case Qt::Key_W:
-            m_message.speed = (m_speedUp) ? (qint8) ui->highSpeedSlider->value() :
-                                            (qint8) ui->normalSpeedSlider->value();
-            m_message.direction = Protocol::MoveUp;
-            m_message.command = Protocol::RobotMove;
-
-            ui->downButton->setChecked(false);
-            ui->rightButton->setChecked(false);
-            ui->leftButton->setChecked(false);
-
-            ui->upButton->setChecked(true);
-            sendSerialData();
-            break;
-        case Qt::Key_Down:
-        case Qt::Key_Z:
-            m_message.speed = (m_speedUp) ? (qint8) ui->highSpeedSlider->value() :
-                                            (qint8) ui->normalSpeedSlider->value();
-            m_message.direction = Protocol::MoveDown;
-            m_message.command = Protocol::RobotMove;
-
-            ui->upButton->setChecked(false);
-            ui->rightButton->setChecked(false);
-            ui->leftButton->setChecked(false);
-
-            ui->downButton->setChecked(true);
-            sendSerialData();
-            break;
-        case Qt::Key_Right:
-        case Qt::Key_D:
-            m_message.speed = (m_speedUp) ? (qint8) ui->highSpeedSlider->value() :
-                                            (qint8) ui->normalSpeedSlider->value();
-            m_message.direction = Protocol::MoveRight;
-            m_message.command = Protocol::RobotMove;
-
-            ui->upButton->setChecked(false);
-            ui->downButton->setChecked(false);
-            ui->leftButton->setChecked(false);
-
-            ui->rightButton->setChecked(true);
-            sendSerialData();
-            break;
-        case Qt::Key_Left:
-        case Qt::Key_A:
-            m_message.speed = (m_speedUp) ? (qint8) ui->highSpeedSlider->value() :
-                                            (qint8) ui->normalSpeedSlider->value();
-            m_message.direction = Protocol::MoveLeft;
-            m_message.command = Protocol::RobotMove;
-
-            ui->upButton->setChecked(false);
-            ui->downButton->setChecked(false);
-            ui->rightButton->setChecked(false);
-
-            ui->leftButton->setChecked(true);
-            sendSerialData();
-            break;
-        case Qt::Key_Shift:
-            m_speedUp = true;
-            ui->SpeedUpButton->setChecked(true);
-
-            if ((m_message.direction != Protocol::MoveNone) && (m_message.speed > 0))
+            switch (e->key())
             {
-                m_message.speed = ui->highSpeedSlider->value();
+            case Qt::Key_Up:
+            case Qt::Key_W:
+                m_message.speed = (m_speedUp) ? (qint8) ui->highSpeedSlider->value() :
+                                                (qint8) ui->normalSpeedSlider->value();
+                m_message.direction = Protocol::MoveUp;
                 m_message.command = Protocol::RobotMove;
+
+                ui->downButton->setChecked(false);
+                ui->rightButton->setChecked(false);
+                ui->leftButton->setChecked(false);
+
+                ui->upButton->setChecked(true);
                 sendSerialData();
+                break;
+            case Qt::Key_Down:
+            case Qt::Key_Z:
+                m_message.speed = (m_speedUp) ? (qint8) ui->highSpeedSlider->value() :
+                                                (qint8) ui->normalSpeedSlider->value();
+                m_message.direction = Protocol::MoveDown;
+                m_message.command = Protocol::RobotMove;
+
+                ui->upButton->setChecked(false);
+                ui->rightButton->setChecked(false);
+                ui->leftButton->setChecked(false);
+
+                ui->downButton->setChecked(true);
+                sendSerialData();
+                break;
+            case Qt::Key_Right:
+            case Qt::Key_D:
+                m_message.speed = (m_speedUp) ? (qint8) ui->highSpeedSlider->value() :
+                                                (qint8) ui->normalSpeedSlider->value();
+                m_message.direction = Protocol::MoveRight;
+                m_message.command = Protocol::RobotMove;
+
+                ui->upButton->setChecked(false);
+                ui->downButton->setChecked(false);
+                ui->leftButton->setChecked(false);
+
+                ui->rightButton->setChecked(true);
+                sendSerialData();
+                break;
+            case Qt::Key_Left:
+            case Qt::Key_A:
+                m_message.speed = (m_speedUp) ? (qint8) ui->highSpeedSlider->value() :
+                                                (qint8) ui->normalSpeedSlider->value();
+                m_message.direction = Protocol::MoveLeft;
+                m_message.command = Protocol::RobotMove;
+
+                ui->upButton->setChecked(false);
+                ui->downButton->setChecked(false);
+                ui->rightButton->setChecked(false);
+
+                ui->leftButton->setChecked(true);
+                sendSerialData();
+                break;
+            case Qt::Key_Shift:
+                m_speedUp = true;
+                ui->SpeedUpButton->setChecked(true);
+
+                if ((m_message.direction != Protocol::MoveNone) && (m_message.speed > 0))
+                {
+                    m_message.speed = ui->highSpeedSlider->value();
+                    m_message.command = Protocol::RobotMove;
+                    sendSerialData();
+                }
+                break;
+            case Qt::Key_Space:
+            case Qt::Key_S:
+                break;
+            default:
+                // Nothing
+                break;
             }
-            break;
-        case Qt::Key_Space:
-        case Qt::Key_S:
-            break;
-        default:
-            // Nothing
-            break;
         }
     }
 }
@@ -172,47 +177,50 @@ void MainWindow::keyReleaseEvent(QKeyEvent* e)
 {
     if (m_isSerialConnected)
     {
-        switch (e->key())
+        if(!e->isAutoRepeat())
         {
-        case Qt::Key_Up:
-        case Qt::Key_W:
-
-        case Qt::Key_Down:
-        case Qt::Key_Z:
-
-        case Qt::Key_Right:
-        case Qt::Key_D:
-
-        case Qt::Key_Left:
-        case Qt::Key_A:
-            m_message.direction = Protocol::MoveNone;
-            m_message.speed = 0;
-            m_message.command = Protocol::RobotMove;
-
-            ui->upButton->setChecked(false);
-            ui->downButton->setChecked(false);
-            ui->rightButton->setChecked(false);
-            ui->leftButton->setChecked(false);
-
-            sendSerialData();
-            break;
-        case Qt::Key_Shift:
-            m_speedUp = false;
-            ui->SpeedUpButton->setChecked(false);
-
-            if ((m_message.direction != Protocol::MoveNone) && (m_message.speed > 0))
+            switch (e->key())
             {
-                m_message.speed = ui->normalSpeedSlider->value();
+            case Qt::Key_Up:
+            case Qt::Key_W:
+
+            case Qt::Key_Down:
+            case Qt::Key_Z:
+
+            case Qt::Key_Right:
+            case Qt::Key_D:
+
+            case Qt::Key_Left:
+            case Qt::Key_A:
+                m_message.direction = Protocol::MoveNone;
+                m_message.speed = 0;
                 m_message.command = Protocol::RobotMove;
+
+                ui->upButton->setChecked(false);
+                ui->downButton->setChecked(false);
+                ui->rightButton->setChecked(false);
+                ui->leftButton->setChecked(false);
+
                 sendSerialData();
+                break;
+            case Qt::Key_Shift:
+                m_speedUp = false;
+                ui->SpeedUpButton->setChecked(false);
+
+                if ((m_message.direction != Protocol::MoveNone) && (m_message.speed > 0))
+                {
+                    m_message.speed = ui->normalSpeedSlider->value();
+                    m_message.command = Protocol::RobotMove;
+                    sendSerialData();
+                }
+                break;
+            case Qt::Key_Space:
+            case Qt::Key_S:
+                break;
+            default:
+                // Nothing
+                break;
             }
-            break;
-        case Qt::Key_Space:
-        case Qt::Key_S:
-            break;
-        default:
-            // Nothing
-            break;
         }
     }
 }
@@ -382,8 +390,8 @@ void MainWindow::initActionsConnections()
 
 void MainWindow::sendSerialData()
 {
-    if (m_serialBusStatus == Protocol::Free)
-    {
+//    if (m_serialBusStatus == Protocol::Free)
+//    {
         m_serialBusStatus = Protocol::MessageDelivery;
 
         QByteArray messageArray;
@@ -401,7 +409,7 @@ void MainWindow::sendSerialData()
         qDebug() << "Serial waiting reply...";
 
         m_serialBusStatus = Protocol::WaintingReply;
-    }
+//    }
 }
 
 void MainWindow::receiveSerialData()

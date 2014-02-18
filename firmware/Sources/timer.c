@@ -34,37 +34,55 @@
 
 static uint32_t Timer_milliseconds;
 
-void Timer_isr (void)
+static Ftm_Config baseTime = {
+    .mode           = FTM_MODE_FREE,
+    .timerFrequency = 1000,
+    .initCounter    = 0,
+};
+
+//void Timer_isr (void)
+//{
+//    Timer_milliseconds++;
+//
+//    TEST_TOGGLE();
+//    
+//    /* Clear ISR */
+//    (void) (FTM0_SC==0);
+//    FTM0_SC = FTM_SC_TOIE_MASK | FTM_SC_CLKS(1) | FTM_SC_PS(0x2) | 0;
+//}
+//
+//void Timer_init (void)
+//{
+//    /* Configuring NVIC */
+//    Interrupt_enable(INTERRUPT_FTM0);
+//
+//    /* Enable clock gate for FTM0 module */
+//    SIM_SCGC6 |= SIM_SCGC6_FTM0_MASK;
+//
+//    /* 12500 pulse @ 80ns = 1ms */
+//    FTM0_MOD = 12499;
+//    /* Enable timer interrupt, system clock and prescaler set to divide x4 (12.5MHz) */
+//    FTM0_SC = FTM_SC_TOIE_MASK | FTM_SC_CLKS(1) | FTM_SC_PS(0x2) | 0;
+//
+//    Timer_milliseconds = 0;
+//}
+
+static void Timer_baseTime (void)
 {
     Timer_milliseconds++;
-
     TEST_TOGGLE();
-    
-    /* Clear ISR */
-    (void) (FTM0_SC==0);
-    FTM0_SC = FTM_SC_TOIE_MASK | FTM_SC_CLKS(1) | FTM_SC_PS(0x2) | 0;
 }
 
 void Timer_init (void)
 {
-    /* Configuring NVIC */
-    Interrupt_enable(INTERRUPT_FTM0);
-
-    /* Enable clock gate for FTM0 module */
-    SIM_SCGC6 |= SIM_SCGC6_FTM0_MASK;
-
-    /* 12500 pulse @ 80ns = 1ms */
-    FTM0_MOD = 12499;
-    /* Enable timer interrupt, system clock and prescaler set to divide x4 (12.5MHz) */
-    FTM0_SC = FTM_SC_TOIE_MASK | FTM_SC_CLKS(1) | FTM_SC_PS(0x2) | 0;
-
+    Ftm_init(FTM0,Timer_baseTime,&baseTime);
     Timer_milliseconds = 0;
 }
 
 void Timer_delay (uint32_t msDelay)
 {
     uint32_t currTicks = Timer_milliseconds;
-    
+
     while ((Timer_milliseconds - currTicks) < msDelay);
 }
 

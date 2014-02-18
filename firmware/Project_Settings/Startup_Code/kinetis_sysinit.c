@@ -16,7 +16,9 @@
 extern "C" {
 #endif
 
-extern void Timer_isr(void);
+extern void Ftm_isrFtm0(void);
+extern void Ftm_isrFtm1(void);
+extern void Ftm_isrFtm2(void);
     
 extern uint32_t __vector_table[];
 extern unsigned long _estack;
@@ -148,9 +150,9 @@ void (* const InterruptVector[])() __attribute__ ((section(".vectortable"))) = {
     Default_Handler,
     Default_Handler,
     Default_Handler,
-    Timer_isr,
-    Default_Handler,
-    Default_Handler,
+    Ftm_isrFtm0,
+    Ftm_isrFtm1,
+    Ftm_isrFtm2,
     Default_Handler,
     Default_Handler,
     Default_Handler,
